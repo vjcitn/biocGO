@@ -31,6 +31,8 @@ vignette sketches the key resources and connections.
 [`GO.db`](https://bioconductor.org/packages/GO.db/) is an *annotation package* used through an
 R API defined in `AnnotationDbi`.  The package is installable using `BiocManager::install`.
 
+## The basic R API
+
 
 Here is how we can acquire some tags and the associated terms.
 
@@ -43,11 +45,13 @@ tt = AnnotationDbi::select(GO.db, keys=lk, columns="TERM")
 tt
 ```
 
+## Dependent packages
+
 Bioconductor software packages that use `GO.db` are:
 
 ![reverse dependencies](bioc_GO.png)
 
-# org.Hs.eg.db
+# org.Hs.eg.db -- mapping GO to genes via NCBI
 
 [`org.Hs.eg.db`](https://bioconductor.org/packages/GO.db/) is a package that
 uses NCBI mappings between genes and GO terms to help annotate genes.
@@ -67,9 +71,9 @@ a tag and 73 packages in Bioconductor 3.13 use it to describe their objective.
 
 ![biocView GO](GOview.png)
 
-Filter the landing pages for Bioc 3.13 <a href="https://bioconductor.org/packages/3.13/BiocViews.html#___GO" target="_blank">here</a>.
+Filter the landing pages for Bioc 3.13 packages self-describing with the 'GO' tag <a href="https://bioconductor.org/packages/3.13/BiocViews.html#___GO" target="_blank">here</a>.
 
-For 3.14, in development, see <a href="https://bioconductor.org/packages/3.14/BiocViews.html#___GO" target="_blank"><here</a>.
+For Bioconductor 3.14 packages in development, see <a href="https://bioconductor.org/packages/3.14/BiocViews.html#___GO" target="_blank"><here</a>.
 
 
 

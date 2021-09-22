@@ -1,6 +1,6 @@
 Package: biocGO
 Title: describe relationship between Gene Ontology and Bioconductor
-Version: 0.0.1
+Version: 0.0.2
 Authors@R:
     person(given = "Vince",
            family = "Carey",
@@ -13,4 +13,4 @@ Suggests: knitr, BiocStyle, testthat, rmarkdown, GO.db
 License: Artistic-2.0
 VignetteBuilder: knitr
 biocViews: Ontology
-BugReports: https://github.com/vjcitn/biocGO
+BugReports: https://github.com/vjcitn/biocGO/issues
