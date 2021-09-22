@@ -1,0 +1,75 @@
+---
+title: "biocGO: describe relationship between Gene Ontology and Bioconductor"
+author: "Vincent J. Carey, stvjc at channing.harvard.edu"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteIndexEntry{biocGO: describe relationship between Gene Ontology and Bioconductor}
+  %\VignetteEncoding{UTF-8}
+output:
+ html_document
+---
+
+```{r setup,echo=FALSE,results="hide"}
+options(width=100)
+suppressMessages({
+suppressPackageStartupMessages({
+library(GO.db)
+library(dplyr)
+library(org.Hs.eg.db)
+})
+})
+```
+
+# Introduction
+
+Gene Ontology reaches into Bioconductor in many ways.  This
+vignette sketches the key resources and connections.
+
+# GO.db
+
+[`GO.db`](https://bioconductor.org/packages/GO.db/) is an *annotation package* used through an
+R API defined in `AnnotationDbi`.  The package is installable using `BiocManager::install`.
+
+
+Here is how we can acquire some tags and the associated terms.
+
+```{r lkgo}
+library(GO.db)
+GO.db
+lk = keys(GO.db)[1:10]
+lk
+tt = AnnotationDbi::select(GO.db, keys=lk, columns="TERM")
+tt
+```
+
+Bioconductor software packages that use `GO.db` are:
+
+![reverse dependencies](bioc_GO.png)
+
+# org.Hs.eg.db
+
+[`org.Hs.eg.db`](https://bioconductor.org/packages/GO.db/) is a package that
+uses NCBI mappings between genes and GO terms to help annotate genes.
+
+```{r lkor}
+library(org.Hs.eg.db)
+library(dplyr)
+syms = AnnotationDbi::select(org.Hs.eg.db, keys=lk, keytype="GO", columns="SYMBOL")
+head(left_join(mutate(tt, GO=GOID), syms, by="GO"),15)
+```
+
+# biocView: GO used for 73 packages in Bioc 3.13
+
+Bioconductor package contributors are required to provide tags for
+their packages derived from a vocabulary called `biocViews`.  "GO" is
+a tag and 73 packages in Bioconductor 3.13 use it to describe their objective.
+
+![biocView GO](GOview.png)
+
+Filter the landing pages for Bioc 3.13 <a href="https://bioconductor.org/packages/3.13/BiocViews.html#___GO" target="_blank">here</a>.
+
+For 3.14, in development, see <a href="https://bioconductor.org/packages/3.14/BiocViews.html#___GO" target="_blank"><here</a>.
+
+
+

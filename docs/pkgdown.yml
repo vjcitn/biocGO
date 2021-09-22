@@ -1,0 +1,10 @@
+pandoc: '2.13'
+pkgdown: 1.6.1
+pkgdown_sha: ~
+articles:
+  biocGO: biocGO.html
+last_built: 2021-09-22T20:10Z
+urls:
+  reference: https://vjcitn.github.io/biocGO/reference
+  article: https://vjcitn.github.io/biocGO/articles
+
