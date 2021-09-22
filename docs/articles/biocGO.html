@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biocGO</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
       </span>
     </div>
 
@@ -97,6 +97,9 @@
 <h1 class="hasAnchor">
 <a href="#go-db" class="anchor"></a>GO.db</h1>
 <p><a href="https://bioconductor.org/packages/GO.db/"><code>GO.db</code></a> is an <em>annotation package</em> used through an R API defined in <code>AnnotationDbi</code>. The package is installable using <code><a href="https://rdrr.io/pkg/BiocManager/man/install.html">BiocManager::install</a></code>.</p>
+<div id="the-basic-r-api" class="section level2">
+<h2 class="hasAnchor">
+<a href="#the-basic-r-api" class="anchor"></a>The basic R API</h2>
 <p>Here is how we can acquire some tags and the associated terms.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">GO.db</span><span class="op">)</span>
@@ -135,14 +138,19 @@
 ## 8  GO:0000011                                      vacuole inheritance
 ## 9  GO:0000012                               single strand break repair
 ## 10 GO:0000014       single-stranded DNA endodeoxyribonuclease activity</code></pre>
+</div>
+<div id="dependent-packages" class="section level2">
+<h2 class="hasAnchor">
+<a href="#dependent-packages" class="anchor"></a>Dependent packages</h2>
 <p>Bioconductor software packages that use <code>GO.db</code> are:</p>
 <div class="figure">
 <img src="bioc_GO.png" alt=""><p class="caption">reverse dependencies</p>
 </div>
 </div>
-<div id="org-hs-eg-db" class="section level1">
+</div>
+<div id="org-hs-eg-db-mapping-go-to-genes-via-ncbi" class="section level1">
 <h1 class="hasAnchor">
-<a href="#org-hs-eg-db" class="anchor"></a>org.Hs.eg.db</h1>
+<a href="#org-hs-eg-db-mapping-go-to-genes-via-ncbi" class="anchor"></a>org.Hs.eg.db – mapping GO to genes via NCBI</h1>
 <p><a href="https://bioconductor.org/packages/GO.db/"><code>org.Hs.eg.db</code></a> is a package that uses NCBI mappings between genes and GO terms to help annotate genes.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span>
@@ -175,8 +183,8 @@
 <div class="figure">
 <img src="GOview.png" alt=""><p class="caption">biocView GO</p>
 </div>
-<p>Filter the landing pages for Bioc 3.13 <a href="https://bioconductor.org/packages/3.13/BiocViews.html#___GO" target="_blank">here</a>.</p>
-<p>For 3.14, in development, see <a href="https://bioconductor.org/packages/3.14/BiocViews.html#___GO" target="_blank">&lt;here</a>.</p>
+<p>Filter the landing pages for Bioc 3.13 packages self-describing with the ‘GO’ tag <a href="https://bioconductor.org/packages/3.13/BiocViews.html#___GO" target="_blank">here</a>.</p>
+<p>For Bioconductor 3.14 packages in development, see <a href="https://bioconductor.org/packages/3.14/BiocViews.html#___GO" target="_blank">&lt;here</a>.</p>
 </div>
   </div>
 
