@@ -45,6 +45,36 @@ tt = AnnotationDbi::select(GO.db, keys=lk, columns="TERM")
 tt
 ```
 
+## "Relationships"
+
+```{r other}
+ls("package:GO.db")
+```
+
+The GO{BP,MF,CC}* entities listed here are special R environments that
+can be queried.
+
+```{r demobp}
+get("GO:0000012", GOBPCHILDREN)
+```
+
+The recorded relationships for BP terms are:
+
+```{r lkrr}
+kk = keys(GO.db)
+allc = mget(kk, GOBPCHILDREN, ifnotfound=NA)
+table(unlist(sapply(allc, names)))
+```
+
+For other subontologies:
+
+```{r lkoth}
+allm = mget(kk, GOMFCHILDREN, ifnotfound=NA)
+table(unlist(sapply(allm, names)))
+allcc = mget(kk, GOCCCHILDREN, ifnotfound=NA)
+table(unlist(sapply(allcc, names)))
+```
+
 ## Dependent packages
 
 Bioconductor software packages that use `GO.db` are:
@@ -76,4 +106,8 @@ Filter the landing pages for Bioc 3.13 packages self-describing with the 'GO' ta
 For Bioconductor 3.14 packages in development, see <a href="https://bioconductor.org/packages/3.14/BiocViews.html#___GO" target="_blank"><here</a>.
 
 
+# Session info
 
+```{r lksess}
+sessionInfo()
+```

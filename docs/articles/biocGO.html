@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biocGO</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
       </span>
     </div>
 
@@ -73,13 +73,13 @@
 
       
 
-      </header><script src="biocGO_files/header-attrs-2.10/header-attrs.js"></script><div class="row">
+      </header><script src="biocGO_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>biocGO: describe relationship between Gene Ontology and Bioconductor</h1>
                         <h4 class="author">Vincent J. Carey, stvjc at channing.harvard.edu</h4>
             
-            <h4 class="date">September 22, 2021</h4>
+            <h4 class="date">September 24, 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/vjcitn/biocGO/blob/master/vignettes/biocGO.Rmd"><code>vignettes/biocGO.Rmd</code></a></small>
       <div class="hidden name"><code>biocGO.Rmd</code></div>
@@ -139,6 +139,46 @@
 ## 9  GO:0000012                               single strand break repair
 ## 10 GO:0000014       single-stranded DNA endodeoxyribonuclease activity</code></pre>
 </div>
+<div id="relationships" class="section level2">
+<h2 class="hasAnchor">
+<a href="#relationships" class="anchor"></a>“Relationships”</h2>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/ls.html">ls</a></span><span class="op">(</span><span class="st">"package:GO.db"</span><span class="op">)</span></code></pre></div>
+<pre><code>##  [1] "GO"            "GO_dbconn"     "GO_dbfile"     "GO_dbInfo"     "GO_dbschema"   "GO.db"        
+##  [7] "GOBPANCESTOR"  "GOBPCHILDREN"  "GOBPOFFSPRING" "GOBPPARENTS"   "GOCCANCESTOR"  "GOCCCHILDREN" 
+## [13] "GOCCOFFSPRING" "GOCCPARENTS"   "GOMAPCOUNTS"   "GOMFANCESTOR"  "GOMFCHILDREN"  "GOMFOFFSPRING"
+## [19] "GOMFPARENTS"   "GOOBSOLETE"    "GOSYNONYM"     "GOTERM"</code></pre>
+<p>The GO{BP,MF,CC}* entities listed here are special R environments that can be queried.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/get.html">get</a></span><span class="op">(</span><span class="st">"GO:0000012"</span>, <span class="va">GOBPCHILDREN</span><span class="op">)</span></code></pre></div>
+<pre><code>##            regulates negatively regulates positively regulates                  isa 
+##         "GO:1903516"         "GO:1903517"         "GO:1903518"         "GO:1903823" 
+##                  isa 
+##         "GO:1990396"</code></pre>
+<p>The recorded relationships for BP terms are:</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">kk</span> <span class="op">=</span> <span class="fu">keys</span><span class="op">(</span><span class="va">GO.db</span><span class="op">)</span>
+<span class="va">allc</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html">mget</a></span><span class="op">(</span><span class="va">kk</span>, <span class="va">GOBPCHILDREN</span>, ifnotfound<span class="op">=</span><span class="cn">NA</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">allc</span>, <span class="va">names</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+##                  isa negatively regulates              part of positively regulates 
+##                53015                 2768                 5191                 2756 
+##            regulates 
+##                 3216</code></pre>
+<p>For other subontologies:</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">allm</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html">mget</a></span><span class="op">(</span><span class="va">kk</span>, <span class="va">GOMFCHILDREN</span>, ifnotfound<span class="op">=</span><span class="cn">NA</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">allm</span>, <span class="va">names</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+##     isa part of 
+##   13631      11</code></pre>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">allcc</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/get.html">mget</a></span><span class="op">(</span><span class="va">kk</span>, <span class="va">GOCCCHILDREN</span>, ifnotfound<span class="op">=</span><span class="cn">NA</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/unlist.html">unlist</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/lapply.html">sapply</a></span><span class="op">(</span><span class="va">allcc</span>, <span class="va">names</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## 
+##     isa part of 
+##    4863    1985</code></pre>
+</div>
 <div id="dependent-packages" class="section level2">
 <h2 class="hasAnchor">
 <a href="#dependent-packages" class="anchor"></a>Dependent packages</h2>
@@ -152,12 +192,12 @@
 <h1 class="hasAnchor">
 <a href="#org-hs-eg-db-mapping-go-to-genes-via-ncbi" class="anchor"></a>org.Hs.eg.db – mapping GO to genes via NCBI</h1>
 <p><a href="https://bioconductor.org/packages/GO.db/"><code>org.Hs.eg.db</code></a> is a package that uses NCBI mappings between genes and GO terms to help annotate genes.</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 <span class="va">syms</span> <span class="op">=</span> <span class="fu">AnnotationDbi</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationDbi/man/AnnotationDb-class.html">select</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span>, keys<span class="op">=</span><span class="va">lk</span>, keytype<span class="op">=</span><span class="st">"GO"</span>, columns<span class="op">=</span><span class="st">"SYMBOL"</span><span class="op">)</span></code></pre></div>
 <pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">tt</span>, GO<span class="op">=</span><span class="va">GOID</span><span class="op">)</span>, <span class="va">syms</span>, by<span class="op">=</span><span class="st">"GO"</span><span class="op">)</span>,<span class="fl">15</span><span class="op">)</span></code></pre></div>
 <pre><code>##          GOID                             TERM         GO EVIDENCE ONTOLOGY   SYMBOL
 ## 1  GO:0000001        mitochondrion inheritance GO:0000001     &lt;NA&gt;     &lt;NA&gt;     &lt;NA&gt;
@@ -185,6 +225,46 @@
 </div>
 <p>Filter the landing pages for Bioc 3.13 packages self-describing with the ‘GO’ tag <a href="https://bioconductor.org/packages/3.13/BiocViews.html#___GO" target="_blank">here</a>.</p>
 <p>For Bioconductor 3.14 packages in development, see <a href="https://bioconductor.org/packages/3.14/BiocViews.html#___GO" target="_blank">&lt;here</a>.</p>
+</div>
+<div id="session-info" class="section level1">
+<h1 class="hasAnchor">
+<a href="#session-info" class="anchor"></a>Session info</h1>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code>## R version 4.1.1 Patched (2021-08-27 r80822)
+## Platform: aarch64-apple-darwin20.5.0 (64-bit)
+## Running under: macOS Big Sur 11.4
+## 
+## Matrix products: default
+## BLAS:   /Users/vincentcarey/R-4-1-dist/lib/R/lib/libRblas.dylib
+## LAPACK: /Users/vincentcarey/R-4-1-dist/lib/R/lib/libRlapack.dylib
+## 
+## locale:
+## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
+## 
+## attached base packages:
+## [1] stats4    stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] org.Hs.eg.db_3.13.0  dplyr_1.0.7          GO.db_3.13.0         AnnotationDbi_1.55.1
+## [5] IRanges_2.27.2       S4Vectors_0.31.3     Biobase_2.53.0       BiocGenerics_0.39.2 
+## 
+## loaded via a namespace (and not attached):
+##  [1] KEGGREST_1.33.0        tidyselect_1.1.1       xfun_0.26              bslib_0.3.0           
+##  [5] purrr_0.3.4            vctrs_0.3.8            generics_0.1.0         htmltools_0.5.2       
+##  [9] yaml_2.2.1             utf8_1.2.2             blob_1.2.2             rlang_0.4.11          
+## [13] pkgdown_1.6.1          jquerylib_0.1.4        pillar_1.6.2           glue_1.4.2            
+## [17] DBI_1.1.1              bit64_4.0.5            GenomeInfoDbData_1.2.6 lifecycle_1.0.0       
+## [21] stringr_1.4.0          zlibbioc_1.39.0        Biostrings_2.61.2      ragg_1.1.3            
+## [25] memoise_2.0.0          evaluate_0.14          knitr_1.34             fastmap_1.1.0         
+## [29] GenomeInfoDb_1.29.8    fansi_0.5.0            Rcpp_1.0.7             cachem_1.0.6          
+## [33] desc_1.3.0             jsonlite_1.7.2         XVector_0.33.0         systemfonts_1.0.2     
+## [37] fs_1.5.0               bit_4.0.4              textshaping_0.3.5      png_0.1-7             
+## [41] digest_0.6.27          stringi_1.7.4          rprojroot_2.0.2        tools_4.1.1           
+## [45] bitops_1.0-7           magrittr_2.0.1         sass_0.4.0             tibble_3.1.4          
+## [49] RCurl_1.98-1.5         RSQLite_2.2.8          crayon_1.4.1           pkgconfig_2.0.3       
+## [53] ellipsis_0.3.2         assertthat_0.2.1       rmarkdown_2.11         httr_1.4.2            
+## [57] R6_2.5.1               compiler_4.1.1</code></pre>
 </div>
   </div>
 
