@@ -37,7 +37,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">biocGO</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
       </span>
     </div>
 
@@ -77,9 +77,14 @@
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>biocGO: describe relationship between Gene Ontology and Bioconductor</h1>
-                        <h4 class="author">Vincent J. Carey, stvjc at channing.harvard.edu</h4>
-            
-            <h4 class="date">September 24, 2021</h4>
+                        <h4 class="author">Vincent J. Carey</h4>
+                  <a class="author_email" href="mailto:#">stvjc at channing.harvard.edu</a>
+      
+                              <h4 class="author">Ludwig Geistlinger</h4>
+                  <a class="author_email" href="mailto:#">ludwig_geistlinger at hms.harvard.edu</a>
+      
+                  
+            <h4 class="date">September 29, 2021</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/vjcitn/biocGO/blob/master/vignettes/biocGO.Rmd"><code>vignettes/biocGO.Rmd</code></a></small>
       <div class="hidden name"><code>biocGO.Rmd</code></div>
@@ -141,7 +146,7 @@
 </div>
 <div id="relationships" class="section level2">
 <h2 class="hasAnchor">
-<a href="#relationships" class="anchor"></a>“Relationships”</h2>
+<a href="#relationships" class="anchor"></a>Relationships</h2>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/ls.html">ls</a></span><span class="op">(</span><span class="st">"package:GO.db"</span><span class="op">)</span></code></pre></div>
 <pre><code>##  [1] "GO"            "GO_dbconn"     "GO_dbfile"     "GO_dbInfo"     "GO_dbschema"   "GO.db"        
@@ -188,10 +193,10 @@
 </div>
 </div>
 </div>
-<div id="org-hs-eg-db-mapping-go-to-genes-via-ncbi" class="section level1">
+<div id="orgdb-packages-mapping-go-to-genes-via-ncbi" class="section level1">
 <h1 class="hasAnchor">
-<a href="#org-hs-eg-db-mapping-go-to-genes-via-ncbi" class="anchor"></a>org.Hs.eg.db – mapping GO to genes via NCBI</h1>
-<p><a href="https://bioconductor.org/packages/GO.db/"><code>org.Hs.eg.db</code></a> is a package that uses NCBI mappings between genes and GO terms to help annotate genes.</p>
+<a href="#orgdb-packages-mapping-go-to-genes-via-ncbi" class="anchor"></a>OrgDb packages – mapping GO to genes via NCBI</h1>
+<p><a href="https://bioconductor.org/packages/GO.db/"><code>org.Hs.eg.db</code></a> is a package that uses NCBI mappings between human genes and GO terms to help annotate genes. Here, we use it to obtain all genes directly annotated to a GO term.</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
@@ -215,6 +220,59 @@
 ## 13 GO:0000003                     reproduction GO:0000003      IBA       BP    GNRH1
 ## 14 GO:0000003                     reproduction GO:0000003      IBA       BP    GNRH2
 ## 15 GO:0000003                     reproduction GO:0000003      IEP       BP   MMP23B</code></pre>
+<p>To obtain all genes annotated to a GO term OR TO ONE OF ITS CHILD NODES in the GO ontology:</p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">syms.all</span> <span class="op">=</span> <span class="fu">AnnotationDbi</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationDbi/man/AnnotationDb-class.html">select</a></span><span class="op">(</span><span class="va">org.Hs.eg.db</span>, keys<span class="op">=</span><span class="va">lk</span>, keytype<span class="op">=</span><span class="st">"GOALL"</span>, columns<span class="op">=</span><span class="st">"SYMBOL"</span><span class="op">)</span></code></pre></div>
+<pre><code>## 'select()' returned 1:many mapping between keys and columns</code></pre>
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html">left_join</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">tt</span>, GOALL<span class="op">=</span><span class="va">GOID</span><span class="op">)</span>, <span class="va">syms.all</span>, by<span class="op">=</span><span class="st">"GOALL"</span><span class="op">)</span>,<span class="fl">15</span><span class="op">)</span></code></pre></div>
+<pre><code>##          GOID                             TERM      GOALL EVIDENCEALL ONTOLOGYALL   SYMBOL
+## 1  GO:0000001        mitochondrion inheritance GO:0000001        &lt;NA&gt;        &lt;NA&gt;     &lt;NA&gt;
+## 2  GO:0000002 mitochondrial genome maintenance GO:0000002         IMP          BP    PARP1
+## 3  GO:0000002 mitochondrial genome maintenance GO:0000002         TAS          BP  SLC25A4
+## 4  GO:0000002 mitochondrial genome maintenance GO:0000002         IDA          BP     DNA2
+## 5  GO:0000002 mitochondrial genome maintenance GO:0000002         IMP          BP     TYMP
+## 6  GO:0000002 mitochondrial genome maintenance GO:0000002         IBA          BP     LIG3
+## 7  GO:0000002 mitochondrial genome maintenance GO:0000002         ISS          BP    MEF2A
+## 8  GO:0000002 mitochondrial genome maintenance GO:0000002         IMP          BP    MPV17
+## 9  GO:0000002 mitochondrial genome maintenance GO:0000002         IMP          BP     OPA1
+## 10 GO:0000002 mitochondrial genome maintenance GO:0000002         IMP          BP    TOP3A
+## 11 GO:0000002 mitochondrial genome maintenance GO:0000002         IEA          BP     TP53
+## 12 GO:0000002 mitochondrial genome maintenance GO:0000002         NAS          BP    LONP1
+## 13 GO:0000002 mitochondrial genome maintenance GO:0000002         IMP          BP     AKT3
+## 14 GO:0000002 mitochondrial genome maintenance GO:0000002         IEA          BP PPARGC1A
+## 15 GO:0000002 mitochondrial genome maintenance GO:0000002         IEA          BP    POLG2</code></pre>
+<p>Gene to GO mappings can be obtained in a similar fashion also for other model organisms:</p>
+<div class="figure">
+<img src="orgdb.png" alt=""><p class="caption">OrgDb packages for model organisms</p>
+</div>
+<p>OrgDb annotation objects for non-model organisms can be obtained via <a href="https://bioconductor.org/packages/AnnotationHub">AnnotationHub</a>.</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">ah</span> <span class="op">&lt;-</span> <span class="fu">AnnotationHub</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">AnnotationHub</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code>## snapshotDate(): 2021-05-18</code></pre>
+<div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">AnnotationHub</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/AnnotationHub/man/AnnotationHub-class.html">query</a></span><span class="op">(</span><span class="va">ah</span>, <span class="st">"OrgDb"</span><span class="op">)</span></code></pre></div>
+<pre><code>## AnnotationHub with 1744 records
+## # snapshotDate(): 2021-05-18
+## # $dataprovider: ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/
+## # $species: Escherichia coli, greater Indian_fruit_bat, Zythia rabiei, Zymoseptoria tritici_IPO3...
+## # $rdataclass: OrgDb
+## # additional mcols(): taxonomyid, genome, description, coordinate_1_based, maintainer,
+## #   rdatadateadded, preparerclass, tags, rdatapath, sourceurl, sourcetype 
+## # retrieve records with, e.g., 'object[["AH92572"]]' 
+## 
+##             title                                     
+##   AH92572 | org.Ag.eg.db.sqlite                       
+##   AH92573 | org.At.tair.db.sqlite                     
+##   AH92574 | org.Bt.eg.db.sqlite                       
+##   AH92575 | org.Cf.eg.db.sqlite                       
+##   AH92576 | org.Gg.eg.db.sqlite                       
+##   ...       ...                                       
+##   AH95560 | org.Linderina_pennispora.eg.sqlite        
+##   AH95561 | org.Daldinia_childiae.eg.sqlite           
+##   AH95562 | org.Aspergillus_nidulans_FGSC_A4.eg.sqlite
+##   AH95563 | org.Emericella_nidulans_FGSC_A4.eg.sqlite 
+##   AH95564 | org.Talaromyces_atroroseus.eg.sqlite</code></pre>
 </div>
 <div id="biocview-go-used-for-73-packages-in-bioc-3-13" class="section level1">
 <h1 class="hasAnchor">
@@ -223,48 +281,110 @@
 <div class="figure">
 <img src="GOview.png" alt=""><p class="caption">biocView GO</p>
 </div>
-<p>Filter the landing pages for Bioc 3.13 packages self-describing with the ‘GO’ tag <a href="https://bioconductor.org/packages/3.13/BiocViews.html#___GO" target="_blank">here</a>.</p>
-<p>For Bioconductor 3.14 packages in development, see <a href="https://bioconductor.org/packages/3.14/BiocViews.html#___GO" target="_blank">&lt;here</a>.</p>
+<p>Filter the landing pages for Bioc 3.13 packages self-describing with the ‘GO’ tag <a href="https://bioconductor.org/packages/3.13/BiocViews.html#___GO">here</a>.</p>
+<p>For Bioconductor 3.14 packages in development, see <a href="https://bioconductor.org/packages/3.14/BiocViews.html#___GO">here</a>.</p>
+</div>
+<div id="go-enrichment-analysis" class="section level1">
+<h1 class="hasAnchor">
+<a href="#go-enrichment-analysis" class="anchor"></a>GO enrichment analysis</h1>
+<p>A popular use case for GO annotations is GO enrichment analysis. A variety of methods are available in Bioconductor for that purpose, and can typically be divided into (i) methods that treat GO annotations as gene sets, and (ii) methods that account for the topology of the GO graph.</p>
+<div id="methods-that-treat-go-annotations-as-gene-sets" class="section level2">
+<h2 class="hasAnchor">
+<a href="#methods-that-treat-go-annotations-as-gene-sets" class="anchor"></a>Methods that treat GO annotations as gene sets</h2>
+<p>Among the most used representatives of this class of methods are</p>
+<ul>
+<li>
+<code><a href="https://rdrr.io/pkg/limma/man/goana.html">limma::goana</a></code> which performs classic over-representation analysis using a hypergeometric test as originally developed for the analysis of microarray data, and</li>
+<li>
+<a href="https://bioconductor.org/packages/goseq">GOSeq</a> which conducts enrichment testing of GO terms while adjusting for gene length bias in RNA-seq data.</li>
+</ul>
+</div>
+<div id="methods-that-account-for-the-topology-of-the-go-graph" class="section level2">
+<h2 class="hasAnchor">
+<a href="#methods-that-account-for-the-topology-of-the-go-graph" class="anchor"></a>Methods that account for the topology of the GO graph</h2>
+<p>Among the most used representatives of this class of methods are</p>
+<ul>
+<li>
+<a href="https://bioconductor.org/packages/GOstats">GOstats</a> which performs a hypergeometric test that optionally conditions on the GO structure, and</li>
+<li>
+<a href="https://bioconductor.org/packages/topGO">topGO</a> which implements different approaches (elim, weight, and parentchild) to reduce redundancy resulting from genes being annotated along the parent-child hierarchy.</li>
+</ul>
+</div>
+</div>
+<div id="benchmarking-of-methods-for-go-enrichment-analysis" class="section level1">
+<h1 class="hasAnchor">
+<a href="#benchmarking-of-methods-for-go-enrichment-analysis" class="anchor"></a>Benchmarking of methods for GO enrichment analysis</h1>
+<p>The <a href="https://bioconductor.org/packages/GSEABenchmarkeR">GSEABenchmarkeR</a> package ships disease relevance scores for GO-BP and GO-MF terms. These relevance scores are aggregated per-gene disease relevance scores as obtained from the <a href="https://www.malacards.org/">MalaCards</a> database. This establishes some ground truth in a benchmarking setup, indicating which GO terms are considered relevant for a certain disease.</p>
+<p>As an example, we inspect relevance scores of certain GO-BP terms for breast cancer:</p>
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">data.dir</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata"</span>, package<span class="op">=</span><span class="st">"GSEABenchmarkeR"</span><span class="op">)</span>
+<span class="va">mala.gobp.file</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="va">data.dir</span>, <span class="st">"malacards"</span>, <span class="st">"GO_BP.rds"</span><span class="op">)</span>
+<span class="va">mala.gobp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readRDS.html">readRDS</a></span><span class="op">(</span><span class="va">mala.gobp.file</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">mala.gobp</span><span class="op">$</span><span class="va">BRCA</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>##                                                                    TITLE REL.SCORE MATCHED.GENES
+## GO:0008284                     Positive Regulation of Cell Proliferation    166.10            78
+## GO:0048010 Vascular Endothelial Growth Factor Receptor Signaling Pathway    135.71            56
+## GO:0043066                      Negative Regulation of Apoptotic Process    123.02            67
+## GO:0001934                Positive Regulation of Protein Phosphorylation    111.96            40
+## GO:0007173            Epidermal Growth Factor Receptor Signaling Pathway    111.09            52
+## GO:0048015                       Phosphatidylinositol-mediated Signaling    110.84            37
+##            TOTAL.GENES
+## GO:0008284         491
+## GO:0048010         281
+## GO:0043066         530
+## GO:0001934         151
+## GO:0007173         323
+## GO:0048015         121</code></pre>
 </div>
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<pre><code>## R version 4.1.1 Patched (2021-08-27 r80822)
-## Platform: aarch64-apple-darwin20.5.0 (64-bit)
+<pre><code>## R version 4.1.0 RC (2021-05-10 r80294)
+## Platform: aarch64-apple-darwin20 (64-bit)
 ## Running under: macOS Big Sur 11.4
 ## 
 ## Matrix products: default
-## BLAS:   /Users/vincentcarey/R-4-1-dist/lib/R/lib/libRblas.dylib
-## LAPACK: /Users/vincentcarey/R-4-1-dist/lib/R/lib/libRlapack.dylib
+## BLAS:   /Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/lib/libRblas.dylib
+## LAPACK: /Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/lib/libRlapack.dylib
 ## 
 ## locale:
 ## [1] en_US.UTF-8/en_US.UTF-8/en_US.UTF-8/C/en_US.UTF-8/en_US.UTF-8
 ## 
 ## attached base packages:
-## [1] stats4    stats     graphics  grDevices utils     datasets  methods   base     
+## [1] stats4    parallel  stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] org.Hs.eg.db_3.13.0  dplyr_1.0.7          GO.db_3.13.0         AnnotationDbi_1.55.1
-## [5] IRanges_2.27.2       S4Vectors_0.31.3     Biobase_2.53.0       BiocGenerics_0.39.2 
+##  [1] org.Hs.eg.db_3.13.0  dplyr_1.0.7          GO.db_3.13.0         AnnotationDbi_1.54.1
+##  [5] IRanges_2.26.0       S4Vectors_0.30.0     Biobase_2.52.0       AnnotationHub_3.1.5 
+##  [9] BiocFileCache_2.0.0  dbplyr_2.1.1         BiocGenerics_0.38.0 
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] KEGGREST_1.33.0        tidyselect_1.1.1       xfun_0.26              bslib_0.3.0           
-##  [5] purrr_0.3.4            vctrs_0.3.8            generics_0.1.0         htmltools_0.5.2       
-##  [9] yaml_2.2.1             utf8_1.2.2             blob_1.2.2             rlang_0.4.11          
-## [13] pkgdown_1.6.1          jquerylib_0.1.4        pillar_1.6.2           glue_1.4.2            
-## [17] DBI_1.1.1              bit64_4.0.5            GenomeInfoDbData_1.2.6 lifecycle_1.0.0       
-## [21] stringr_1.4.0          zlibbioc_1.39.0        Biostrings_2.61.2      ragg_1.1.3            
-## [25] memoise_2.0.0          evaluate_0.14          knitr_1.34             fastmap_1.1.0         
-## [29] GenomeInfoDb_1.29.8    fansi_0.5.0            Rcpp_1.0.7             cachem_1.0.6          
-## [33] desc_1.3.0             jsonlite_1.7.2         XVector_0.33.0         systemfonts_1.0.2     
-## [37] fs_1.5.0               bit_4.0.4              textshaping_0.3.5      png_0.1-7             
-## [41] digest_0.6.27          stringi_1.7.4          rprojroot_2.0.2        tools_4.1.1           
-## [45] bitops_1.0-7           magrittr_2.0.1         sass_0.4.0             tibble_3.1.4          
-## [49] RCurl_1.98-1.5         RSQLite_2.2.8          crayon_1.4.1           pkgconfig_2.0.3       
-## [53] ellipsis_0.3.2         assertthat_0.2.1       rmarkdown_2.11         httr_1.4.2            
-## [57] R6_2.5.1               compiler_4.1.1</code></pre>
+##  [1] Rcpp_1.0.7                    Biostrings_2.60.2             png_0.1-7                    
+##  [4] assertthat_0.2.1              rprojroot_2.0.2               digest_0.6.28                
+##  [7] utf8_1.2.2                    mime_0.11                     GenomeInfoDb_1.28.4          
+## [10] R6_2.5.1                      RSQLite_2.2.8                 evaluate_0.14                
+## [13] httr_1.4.2                    pillar_1.6.3                  zlibbioc_1.38.0              
+## [16] rlang_0.4.11                  curl_4.3.2                    jquerylib_0.1.4              
+## [19] blob_1.2.2                    rmarkdown_2.11                pkgdown_1.6.1                
+## [22] textshaping_0.3.5             desc_1.3.0                    stringr_1.4.0                
+## [25] RCurl_1.98-1.5                bit_4.0.4                     shiny_1.7.0                  
+## [28] compiler_4.1.0                httpuv_1.6.3                  xfun_0.26                    
+## [31] pkgconfig_2.0.3               systemfonts_1.0.2             htmltools_0.5.2              
+## [34] KEGGREST_1.32.0               tidyselect_1.1.1              GenomeInfoDbData_1.2.6       
+## [37] tibble_3.1.4                  interactiveDisplayBase_1.31.1 fansi_0.5.0                  
+## [40] withr_2.4.2                   crayon_1.4.1                  later_1.3.0                  
+## [43] bitops_1.0-7                  rappdirs_0.3.3                jsonlite_1.7.2               
+## [46] xtable_1.8-4                  lifecycle_1.0.1               DBI_1.1.1                    
+## [49] magrittr_2.0.1                stringi_1.7.4                 cachem_1.0.6                 
+## [52] XVector_0.32.0                fs_1.5.0                      promises_1.2.0.1             
+## [55] bslib_0.3.0                   ellipsis_0.3.2                filelock_1.0.2               
+## [58] ragg_1.1.3                    generics_0.1.0                vctrs_0.3.8                  
+## [61] tools_4.1.0                   bit64_4.0.5                   glue_1.4.2                   
+## [64] purrr_0.3.4                   BiocVersion_3.13.1            fastmap_1.1.0                
+## [67] yaml_2.2.1                    BiocManager_1.30.16           memoise_2.0.0                
+## [70] knitr_1.34                    sass_0.4.0</code></pre>
 </div>
   </div>
 

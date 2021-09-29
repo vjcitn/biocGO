@@ -3,7 +3,7 @@ pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
   biocGO: biocGO.html
-last_built: 2021-09-24T12:56Z
+last_built: 2021-09-29T15:13Z
 urls:
   reference: https://vjcitn.github.io/biocGO/reference
   article: https://vjcitn.github.io/biocGO/articles
